@@ -74,3 +74,11 @@ Import the source into a Next.js-compatible host. Build with `npm run build:next
 See `CONTENT_CHECKLIST.md` for every pending field. Dashed orange “to confirm” tags identify missing CV, screenshots, years, project links, contributions, and technical details. UI studies use skeletons and em dashes rather than invented data. No unverified results are rendered.
 
 The portfolio includes semantic headings, skip navigation, focus states, keyboard skill tabs, native disclosures, metadata, a PNG Open Graph image, Twitter metadata, JSON-LD Person, sitemap, robots, and a custom 404. Lighthouse targets are 90+ performance and 95+ accessibility/SEO/best practices; only actual measured results should be reported. `CLS 0` is a target, not an unmeasured claim.
+
+## Languages and the opening experience
+
+The portfolio has English, French, and Arabic routes at `/en`, `/fr`, and `/ar`. `/` redirects to English, and old `/projects/:slug` links redirect to their English case studies. The language selector preserves the current page and section. Shared English content remains in the section files; typed French and Arabic dictionaries live in `content/locales/`. Arabic uses Noto Sans Arabic, server-rendered `lang="ar"` / `dir="rtl"`, mirrored layouts, and RTL-aware skill-tab keyboard navigation. The same supplied CV PDF is available in every language; the PDF itself is not translated.
+
+The CV button sits directly beside the contact CTA on desktop and mobile. Small screens use two compact header rows to retain readable controls.
+
+The former name-only loader has been replaced by a brief signal-lock sequence: an outlined MK monogram resolves inside a scanning frame, localized phase text accompanies the animation, and split shutters reveal the hero. It automatically exits within 1.9 seconds, does not intercept input, and is hidden for reduced motion. `content/loader.ts` contains its copy. Both local development and the standard production build use Webpack for reliable style refresh in this environment.

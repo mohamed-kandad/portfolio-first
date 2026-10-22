@@ -23,3 +23,11 @@ Limits:
 - Resend delivery success cannot be tested until real sender credentials are configured. The UI does not claim successful sending while unconfigured.
 - Lighthouse and field Core Web Vitals were not measured. No numeric Lighthouse score or CLS value is claimed.
 - Project assets and CV still require the items in CONTENT_CHECKLIST.md.
+
+## Multilingual and intro update
+
+- All three language homepages and all nine case-study routes respond successfully, with the matching server-rendered HTML language and direction.
+- Root and legacy project redirects, the CV PDF, and the multilingual sitemap pass HTTP checks.
+- English → French → Arabic switching was checked in the browser. The CV link is immediately adjacent to the contact CTA in the header DOM.
+- Arabic uses the requested right-to-left layout and a locally served Arabic font. An off-screen honeypot overflow issue was fixed by clipping the field within form bounds.
+- The creative intro was visually checked in the browser: a framed scanning MK monogram followed by a split-shutter exit. Reduced-motion skip and animation cleanup are implemented.

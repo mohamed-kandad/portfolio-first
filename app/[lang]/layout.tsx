@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, DM_Sans } from "next/font/google";
-import "./globals.css";
+import {
+  Bricolage_Grotesque,
+  DM_Sans,
+  Noto_Sans_Arabic,
+} from "next/font/google";
+import "../globals.css";
 import { site } from "@/content/site";
+import { getDictionary, isLocale, locales } from "@/content/locales";
+import { notFound } from "next/navigation";
 import { Navigation } from "@/components/portfolio/navigation";
 const heading = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -32,22 +38,43 @@ export const metadata: Metadata = {
   },
   icons: { icon: "/favicon.svg" },
 };
-export default function RootLayout({
+const arabic = Noto_Sans_Arabic({
+  subsets: ["arabic"],
+  weight: ["400", "500", "800"],
+  variable: "--font-arabic",
+  display: "swap",
+});
+export function generateStaticParams() {
+  return locales.map((lang) => ({ lang }));
+}
+export default async function RootLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
+  params: Promise<{ lang: string }>;
 }) {
+  const { lang } = await params;
+  if (!isLocale(lang)) notFound();
+  const d = await getDictionary(lang);
   return (
     <html
-      lang="en"
+      lang={lang}
+      dir={lang === "ar" ? "rtl" : "ltr"}
       data-scroll-behavior="smooth"
-      className={`${heading.variable} ${body.variable}`}
+      className={`${heading.variable} ${body.variable} ${arabic.variable}`}
     >
       <body>
         <a className="skip-link" href="#main">
-          Skip to content
+          {d.ui.skip}
         </a>
-        <Navigation />
+        <Navigation
+          key={lang}
+          locale={lang}
+          site={d.site}
+          contact={d.contact}
+          ui={d.ui}
+        />
         {children}
       </body>
     </html>

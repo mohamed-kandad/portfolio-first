@@ -13,7 +13,7 @@
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate",
     "typecheck": "tsc --noEmit",
-    "dev:next": "next dev",
+    "dev:next": "next dev --webpack",
     "build:next": "next build --webpack"
   },
   "dependencies": {

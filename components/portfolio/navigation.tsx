@@ -1,23 +1,35 @@
 "use client";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ArrowUpRight, Download } from "lucide-react";
-import { site } from "@/content/site";
-import { contact } from "@/content/contact";
-export function Navigation() {
+import type { Dictionary, Locale } from "@/content/locales";
+const ids = ["home", "about", "work", "experience", "skills", "contact"];
+export function Navigation({
+  locale,
+  site,
+  contact,
+  ui,
+}: {
+  locale: Locale;
+  site: Dictionary["site"];
+  contact: Dictionary["contact"];
+  ui: Dictionary["ui"];
+}) {
   const [open, setOpen] = useState(false),
     [scrolled, setScrolled] = useState(false),
     [active, setActive] = useState("home");
+  const pathname = usePathname();
+  const router = useRouter();
   useEffect(() => {
     const scroll = () => setScrolled(window.scrollY > 20);
     scroll();
     window.addEventListener("scroll", scroll, { passive: true });
     const observer = new IntersectionObserver(
-      (entries) => {
+      (entries) =>
         entries.forEach((e) => {
           if (e.isIntersecting) setActive(e.target.id);
-        });
-      },
+        }),
       { rootMargin: "-15% 0px -65% 0px" },
     );
     const observe = () => {
@@ -43,33 +55,55 @@ export function Navigation() {
     <header className={`nav ${scrolled ? "scrolled" : ""}`}>
       <div className="nav-inner">
         <Link
-          href="/#home"
+          href={`/${locale}#home`}
           className="monogram"
-          aria-label={`${site.name} home`}
+          aria-label={site.name}
         >
           {site.monogram}
           <span>.</span>
         </Link>
-        <nav className="desktop-nav" aria-label="Main navigation">
-          {site.nav.map((item) => (
+        <nav className="desktop-nav" aria-label={ui.mainNav}>
+          {site.nav.map((label, i) => (
             <Link
-              key={item}
-              href={`/#${item.toLowerCase()}`}
-              className={active === item.toLowerCase() ? "active" : ""}
-              aria-current={
-                active === item.toLowerCase() ? "location" : undefined
-              }
+              key={ids[i]}
+              href={`/${locale}#${ids[i]}`}
+              className={active === ids[i] ? "active" : ""}
+              aria-current={active === ids[i] ? "location" : undefined}
             >
-              {item}
+              {label}
             </Link>
           ))}
-          <a href={contact.cv} className="nav-resume" download>
-            {contact.cvLabel}
-            <Download size={15} />
-          </a>
         </nav>
         <div className="nav-actions">
-          <Link className="nav-cta" href="/#contact">
+          <select
+            className="language-select"
+            aria-label={ui.language}
+            value={locale}
+            onChange={(e) => {
+              const suffix = pathname.replace(/^\/(en|fr|ar)(?=\/|$)/, "");
+              router.push(`/${e.target.value}${suffix}${window.location.hash}`);
+            }}
+          >
+            <option value="en" lang="en">
+              EN
+            </option>
+            <option value="fr" lang="fr">
+              FR
+            </option>
+            <option value="ar" lang="ar">
+              عربي
+            </option>
+          </select>
+          <a
+            href={contact.cv}
+            className="nav-resume button button-secondary"
+            download
+            aria-label={contact.cvLabel}
+          >
+            <span>{locale === "ar" ? "السيرة" : "CV"}</span>
+            <Download size={15} />
+          </a>
+          <Link className="nav-cta" href={`/${locale}#contact`}>
             {site.navCta}
             <ArrowUpRight size={16} />
           </Link>
@@ -85,31 +119,18 @@ export function Navigation() {
         </div>
       </div>
       {open && (
-        <nav
-          id="mobile-nav"
-          className="mobile-nav"
-          aria-label="Mobile navigation"
-        >
-          {site.nav.map((item, i) => (
+        <nav id="mobile-nav" className="mobile-nav" aria-label={ui.mobileNav}>
+          {site.nav.map((label, i) => (
             <Link
-              key={item}
-              href={`/#${item.toLowerCase()}`}
+              key={ids[i]}
+              href={`/${locale}#${ids[i]}`}
               onClick={() => setOpen(false)}
             >
               <small>0{i + 1}</small>
-              {item}
+              {label}
               <ArrowUpRight />
             </Link>
           ))}
-          <a
-            href={contact.cv}
-            className="nav-resume"
-            download
-            onClick={() => setOpen(false)}
-          >
-            {contact.cvLabel}
-            <Download size={18} />
-          </a>
         </nav>
       )}
     </header>

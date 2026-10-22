@@ -1,5 +1,5 @@
-import { contact } from "@/content/contact";
-export function Footer() {
+import type { Dictionary } from "@/content/locales";
+export function Footer({ contact }: { contact: Dictionary["contact"] }) {
   return (
     <footer className="footer wrap">
       <span>{contact.footer}</span>

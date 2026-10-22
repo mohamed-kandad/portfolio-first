@@ -14,9 +14,11 @@ import { visualCopy, work, type Project } from "@/content/projects";
 export function ProjectVisual({
   kind,
   large = false,
+  note = work.visualNote,
 }: {
   kind: Project["kind"];
   large?: boolean;
+  note?: string;
 }) {
   if (kind === "mobile")
     return (
@@ -86,7 +88,7 @@ export function ProjectVisual({
             <small>{visualCopy.mobile.note}</small>
           </div>
         </div>
-        <span className="visual-note">{work.visualNote}</span>
+        <span className="visual-note">{note}</span>
       </div>
     );
   const copy = kind === "school" ? visualCopy.school : visualCopy.products;
@@ -177,7 +179,7 @@ export function ProjectVisual({
           </div>
         </div>
       </div>
-      <span className="visual-note">{work.visualNote}</span>
+      <span className="visual-note">{note}</span>
     </div>
   );
 }

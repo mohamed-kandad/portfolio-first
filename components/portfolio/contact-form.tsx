@@ -3,9 +3,19 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowUpRight, LoaderCircle } from "lucide-react";
-import { contactSchema, type ContactInput } from "@/lib/contact-schema";
-import { contact } from "@/content/contact";
-export function ContactForm({ configured }: { configured: boolean }) {
+import { makeContactSchema, type ContactInput } from "@/lib/contact-schema";
+import type { Dictionary, Locale } from "@/content/locales";
+export function ContactForm({
+  configured,
+  contact,
+  locale,
+  validation,
+}: {
+  configured: boolean;
+  contact: Dictionary["contact"];
+  locale: Locale;
+  validation: Dictionary["ui"]["validation"];
+}) {
   const [status, setStatus] = useState(""),
     [sent, setSent] = useState(false);
   const copy = contact.form;
@@ -14,13 +24,18 @@ export function ContactForm({ configured }: { configured: boolean }) {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<ContactInput>({ resolver: zodResolver(contactSchema) });
+  } = useForm<ContactInput>({
+    resolver: zodResolver(makeContactSchema(validation)),
+  });
   const submit = async (values: ContactInput) => {
     setStatus("");
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Accept-Language": locale,
+        },
         body: JSON.stringify(values),
       });
       const result: unknown = await response.json();
@@ -30,7 +45,9 @@ export function ContactForm({ configured }: { configured: boolean }) {
             result !== null &&
             "error" in result &&
             typeof result.error === "string"
-            ? result.error
+            ? locale === "en"
+              ? result.error
+              : copy.error
             : copy.error,
         );
       setSent(true);

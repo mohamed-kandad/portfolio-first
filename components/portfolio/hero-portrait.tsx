@@ -1,11 +1,11 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { hero } from "@/content/hero";
+import type { Dictionary } from "@/content/locales";
 type Cell = { x: number; y: number; index: number; color: string };
 const ramp = " .:/<+{0#@";
 const clamp = (min: number, max: number, value: number) =>
   Math.max(min, Math.min(max, value));
-export function HeroPortrait() {
+export function HeroPortrait({ hero }: { hero: Dictionary["hero"] }) {
   const panel = useRef<HTMLElement>(null),
     canvas = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
@@ -212,7 +212,7 @@ export function HeroPortrait() {
       reduce.removeEventListener("change", onMotion);
       image.onload = null;
     };
-  }, []);
+  }, [hero]);
   return (
     <figure ref={panel} className="panel" aria-label={hero.portrait.alt}>
       <canvas ref={canvas} className="code-portrait" aria-hidden="true" />

@@ -1,14 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, ArrowDown, Smartphone } from "lucide-react";
-import { hero, mobileSection } from "@/content/hero";
-import { about } from "@/content/about";
-import { projects, work } from "@/content/projects";
-import { career, experience } from "@/content/experience";
-import { education, languages } from "@/content/education";
-import { skillContent } from "@/content/skills";
-import { contact } from "@/content/contact";
-import { site } from "@/content/site";
+import { getDictionary, isLocale } from "@/content/locales";
+import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { HeroPortrait } from "@/components/portfolio/hero-portrait";
 import { IntroLoader } from "@/components/portfolio/loader";
 import { ProjectVisual } from "@/components/portfolio/project-visual";
@@ -25,7 +20,50 @@ import { ConfirmTag } from "@/components/portfolio/confirm-tag";
 import { SiteEffects } from "@/components/portfolio/effects";
 import { Footer } from "@/components/portfolio/footer";
 export const dynamic = "force-dynamic";
-export default function Home() {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}): Promise<Metadata> {
+  const { lang } = await params;
+  if (!isLocale(lang)) return {};
+  const d = await getDictionary(lang);
+  return {
+    title: { absolute: d.site.title },
+    description: d.site.description,
+    alternates: {
+      canonical: `/${lang}`,
+      languages: { en: "/en", fr: "/fr", ar: "/ar", "x-default": "/en" },
+    },
+    openGraph: {
+      title: d.site.title,
+      description: d.site.description,
+      locale: lang,
+    },
+  };
+}
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}) {
+  const { lang } = await params;
+  if (!isLocale(lang)) notFound();
+  const d = await getDictionary(lang);
+  const {
+    hero,
+    mobileSection,
+    about,
+    projects,
+    work,
+    career,
+    experience,
+    education,
+    languages,
+    skillContent,
+    contact,
+    site,
+  } = d;
   const configured = Boolean(
     process.env.RESEND_API_KEY &&
     process.env.CONTACT_FROM &&
@@ -39,10 +77,10 @@ export default function Home() {
         href={hero.portrait.src}
         fetchPriority="high"
       />
-      <IntroLoader />
+      <IntroLoader locale={lang} />
       <main id="main">
         <section id="home" className="hero">
-          <HeroPortrait />
+          <HeroPortrait hero={hero} />
           <div className="wrap hero-wrap">
             <h1>
               {hero.headline.map((line, i) => (
@@ -63,14 +101,14 @@ export default function Home() {
                 <strong>{hero.greeting}</strong> — {hero.intro}
               </p>
               <div className="hero-buttons">
-                <MagneticLink />
-                <CvLink />
+                <MagneticLink label={hero.workCta} />
+                <CvLink contact={contact} confirm={site.confirm} />
               </div>
-              <SocialLinks />
+              <SocialLinks contact={contact} />
               <div className="availability">
                 <span className="status-dot" />
                 <span>{hero.availability}</span>
-                <LocalTime />
+                <LocalTime locale={lang} label={d.ui.clock} />
               </div>
             </div>
             <a className="scroll-indicator" href="#native">
@@ -171,7 +209,7 @@ export default function Home() {
                   <span className="project-number">{project.number}</span>
                   <div className="project-category">{project.category}</div>
                   <h3>
-                    <Link href={`/projects/${project.slug}`}>
+                    <Link href={`/${lang}/projects/${project.slug}`}>
                       {project.title}
                     </Link>
                   </h3>
@@ -183,23 +221,25 @@ export default function Home() {
                   </div>
                   <Link
                     className="case-link"
-                    href={`/projects/${project.slug}`}
+                    href={`/${lang}/projects/${project.slug}`}
                   >
                     {work.caseLink}
                     <ArrowUpRight size={17} />
                   </Link>
                   <div className="pending-tags">
                     {project.pending.map((item) => (
-                      <ConfirmTag key={item}>{item}</ConfirmTag>
+                      <ConfirmTag key={item} label={site.confirm}>
+                        {item}
+                      </ConfirmTag>
                     ))}
                   </div>
                 </div>
                 <Link
-                  href={`/projects/${project.slug}`}
+                  href={`/${lang}/projects/${project.slug}`}
                   className="project-preview"
                   aria-label={`${work.caseLink}: ${project.title}`}
                 >
-                  <ProjectVisual kind={project.kind} />
+                  <ProjectVisual kind={project.kind} note={work.visualNote} />
                 </Link>
               </article>
             ))}
@@ -278,7 +318,12 @@ export default function Home() {
             {skillContent.eyebrow}
           </div>
           <h2 data-reveal>{skillContent.heading}</h2>
-          <SkillExplorer />
+          <SkillExplorer
+            key={lang}
+            skills={d.skills}
+            skillContent={skillContent}
+            rtl={lang === "ar"}
+          />
         </section>
         <section id="contact" className="contact-section">
           <div className="wrap section">
@@ -293,22 +338,28 @@ export default function Home() {
             <p className="contact-subtitle">{contact.subtitle}</p>
             <div className="contact-grid">
               <div>
-                <CopyEmail />
+                <CopyEmail contact={contact} />
                 <div className="contact-actions">
-                  <SocialLinks />
-                  <CvLink />
+                  <SocialLinks contact={contact} />
+                  <CvLink contact={contact} confirm={site.confirm} />
                 </div>
                 <p className="contact-phone">
                   <a href={contact.phoneHref}>{contact.phone}</a>
                   <span> · {contact.location}</span>
                 </p>
               </div>
-              <ContactForm configured={configured} />
+              <ContactForm
+                key={lang}
+                configured={configured}
+                contact={contact}
+                locale={lang}
+                validation={d.ui.validation}
+              />
             </div>
           </div>
         </section>
       </main>
-      <Footer />
+      <Footer contact={contact} />
       <SiteEffects />
       <script
         type="application/ld+json"

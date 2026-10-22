@@ -4,9 +4,11 @@ export default function Loading() {
       id="main"
       className="page-loading"
       aria-busy="true"
-      aria-label="Loading page"
+      aria-label="Loading"
     >
-      <span className="eyebrow">MOHAMED KANDAD</span>
+      <span className="monogram" dir="ltr">
+        MK<span>.</span>
+      </span>
       <div className="loading-line" />
     </main>
   );

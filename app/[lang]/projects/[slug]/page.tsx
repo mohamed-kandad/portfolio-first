@@ -1,37 +1,57 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
-import { projects, caseCopy } from "@/content/projects";
+import { getDictionary, isLocale, locales, en } from "@/content/locales";
 import { ProjectVisual } from "@/components/portfolio/project-visual";
 import { ConfirmTag } from "@/components/portfolio/confirm-tag";
 import { Footer } from "@/components/portfolio/footer";
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return projects.map((project) => ({ slug: project.slug }));
+  return locales.flatMap((lang) =>
+    en.projects.map((project) => ({ lang, slug: project.slug })),
+  );
 }
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ lang: string; slug: string }>;
 }) {
-  const { slug } = await params;
+  const { slug, lang } = await params;
+  if (!isLocale(lang)) return {};
+  const { projects } = await getDictionary(lang);
   const project = projects.find((p) => p.slug === slug);
-  return { title: project?.title, description: project?.description };
+  return {
+    title: project?.title,
+    description: project?.description,
+    alternates: {
+      canonical: `/${lang}/projects/${slug}`,
+      languages: Object.fromEntries(
+        locales.map((l) => [l, `/${l}/projects/${slug}`]),
+      ),
+    },
+    openGraph: {
+      title: project?.title,
+      description: project?.description,
+      locale: lang,
+    },
+  };
 }
 export default async function ProjectPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ lang: string; slug: string }>;
 }) {
-  const { slug } = await params,
-    project = projects.find((p) => p.slug === slug);
+  const { slug, lang } = await params;
+  if (!isLocale(lang)) notFound();
+  const { projects, caseCopy, contact, site, work } = await getDictionary(lang);
+  const project = projects.find((p) => p.slug === slug);
   if (!project) notFound();
   const next = projects[(projects.indexOf(project) + 1) % projects.length];
   return (
     <>
       <main id="main" className="case-page">
         <header className="wrap section case-header">
-          <Link href="/#work" className="text-link">
+          <Link href={`/${lang}#work`} className="text-link">
             <ArrowLeft size={16} />
             {caseCopy.back}
           </Link>
@@ -47,7 +67,7 @@ export default async function ProjectPage({
           </div>
         </header>
         <div className="wrap case-visual">
-          <ProjectVisual kind={project.kind} large />
+          <ProjectVisual kind={project.kind} large note={work.visualNote} />
           <p>{caseCopy.visualNote}</p>
         </div>
         {[
@@ -83,7 +103,7 @@ export default async function ProjectPage({
           <span className="eyebrow">05 / {caseCopy.labels[4]}</span>
           <div>
             <h2>{caseCopy.labels[4]}</h2>
-            <ConfirmTag />
+            <ConfirmTag label={site.confirm} />
             <p>{project.challenges}</p>
           </div>
         </section>
@@ -91,7 +111,7 @@ export default async function ProjectPage({
           <span className="eyebrow">06 / {caseCopy.labels[5]}</span>
           <div>
             <h2>{caseCopy.labels[5]}</h2>
-            <ConfirmTag />
+            <ConfirmTag label={site.confirm} />
             <p>{project.contribution}</p>
           </div>
         </section>
@@ -108,23 +128,25 @@ export default async function ProjectPage({
           <span className="eyebrow">{caseCopy.pending}</span>
           <div className="pending-tags">
             {project.pending.map((item) => (
-              <ConfirmTag key={item}>{item}</ConfirmTag>
+              <ConfirmTag key={item} label={site.confirm}>
+                {item}
+              </ConfirmTag>
             ))}
           </div>
         </section>
         <section className="wrap section next-project">
           <span className="eyebrow">{caseCopy.next}</span>
-          <Link href={`/projects/${next.slug}`}>
+          <Link href={`/${lang}/projects/${next.slug}`}>
             {next.title}
             <ArrowUpRight />
           </Link>
-          <Link className="text-link" href="/#contact">
+          <Link className="text-link" href={`/${lang}#contact`}>
             {caseCopy.contact}
             <ArrowUpRight size={16} />
           </Link>
         </section>
       </main>
-      <Footer />
+      <Footer contact={contact} />
     </>
   );
 }

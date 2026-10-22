@@ -1,9 +1,15 @@
 import { site } from "@/content/site";
-export function ConfirmTag({ children }: { children?: React.ReactNode }) {
+export function ConfirmTag({
+  children,
+  label = site.confirm,
+}: {
+  children?: React.ReactNode;
+  label?: string;
+}) {
   return (
     <span className="confirm-tag">
       {children ? <>{children} · </> : null}
-      {site.confirm}
+      {label}
     </span>
   );
 }
