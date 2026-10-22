@@ -1,6 +1,7 @@
 # To confirm before public launch
 
-- [ ] CV PDF: provide `public/cv-mohamed-kandad.pdf`, then set `contact.cv` or `NEXT_PUBLIC_CV_URL` to `/cv-mohamed-kandad.pdf`. The UI shows a disabled CV action with a dashed tag until a real file exists.
+- [x] User-supplied CV is available at `public/cv-mohamed-kandad.pdf` and linked from the navbar, hero, and contact section.
+
 - [ ] MadrasatiCom: real screenshots, project year, demo link, public GitHub link, individual contribution vs. team, and specific technical challenges.
 - [ ] Popcard Rewards Staff App: real screenshots, project year, demo link, public GitHub link, individual feature ownership vs. team, and specific technical challenges.
 - [ ] Product Manager: real screenshots, project year, demo link, public GitHub link, individual contribution vs. team, specific technical challenges, and any authentication claims.

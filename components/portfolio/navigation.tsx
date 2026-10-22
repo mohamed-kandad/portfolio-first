@@ -1,8 +1,9 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Download } from "lucide-react";
 import { site } from "@/content/site";
+import { contact } from "@/content/contact";
 export function Navigation() {
   const [open, setOpen] = useState(false),
     [scrolled, setScrolled] = useState(false),
@@ -62,6 +63,10 @@ export function Navigation() {
               {item}
             </Link>
           ))}
+          <a href={contact.cv} className="nav-resume" download>
+            {contact.cvLabel}
+            <Download size={15} />
+          </a>
         </nav>
         <div className="nav-actions">
           <Link className="nav-cta" href="/#contact">
@@ -96,6 +101,15 @@ export function Navigation() {
               <ArrowUpRight />
             </Link>
           ))}
+          <a
+            href={contact.cv}
+            className="nav-resume"
+            download
+            onClick={() => setOpen(false)}
+          >
+            {contact.cvLabel}
+            <Download size={18} />
+          </a>
         </nav>
       )}
     </header>

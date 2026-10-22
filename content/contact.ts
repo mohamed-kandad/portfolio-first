@@ -8,7 +8,7 @@ export const contact = {
   linkedin:
     process.env.NEXT_PUBLIC_LINKEDIN_URL ||
     "https://www.linkedin.com/in/mohamed-kandad/",
-  cv: process.env.NEXT_PUBLIC_CV_URL || "",
+  cv: process.env.NEXT_PUBLIC_CV_URL || "/cv-mohamed-kandad.pdf",
   cvLabel: "Download CV",
   cvPending: "CV PDF to confirm",
   phone: "+212 695 208 671",
