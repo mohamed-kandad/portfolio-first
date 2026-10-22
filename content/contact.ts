@@ -1,0 +1,38 @@
+export const contact = {
+  eyebrow: "05 / LET’S BUILD WHAT’S NEXT",
+  headline: ["HAVE SOMETHING", "IN MIND?"],
+  subtitle: "Let’s build something meaningful together.",
+  email: process.env.NEXT_PUBLIC_CONTACT_EMAIL || "kandad.mohamed@gmail.com",
+  github:
+    process.env.NEXT_PUBLIC_GITHUB_URL || "https://github.com/mohamed-kandad",
+  linkedin:
+    process.env.NEXT_PUBLIC_LINKEDIN_URL ||
+    "https://www.linkedin.com/in/mohamed-kandad/",
+  cv: process.env.NEXT_PUBLIC_CV_URL || "",
+  cvLabel: "Download CV",
+  cvPending: "CV PDF to confirm",
+  phone: "+212 695 208 671",
+  phoneHref: "tel:+212695208671",
+  location: "Casablanca, Morocco",
+  copyLabel: "Copy email",
+  copiedLabel: "Email copied",
+  copyError: "Copy unavailable — use the email link.",
+  socialLabels: { github: "GitHub", linkedin: "LinkedIn" },
+  form: {
+    heading: "START A CONVERSATION",
+    name: "Name",
+    email: "Email",
+    message: "Message",
+    namePlaceholder: "Your name",
+    emailPlaceholder: "you@company.com",
+    messagePlaceholder: "A role, a project, a good idea…",
+    send: "Send message",
+    sending: "Sending…",
+    again: "Send another",
+    configured: "Your next great project starts with hello.",
+    unconfigured: "Email delivery to confirm · Use the email link above.",
+    success: "Message sent. Thank you for reaching out.",
+    error: "Unable to send. Please try again.",
+  },
+  footer: "© 2026 Mohamed Kandad",
+};
