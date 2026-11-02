@@ -1,3 +1,5 @@
+# portfolio-first
+
 # Mohamed Kandad — Developer Portfolio
 
 The approved dark editorial design, implemented with Next.js 16.3.4 App Router, React 19, strict TypeScript, Tailwind CSS 4, Lucide, React Hook Form, and Zod. No dependencies were added for this redesign. The former 3D/animation libraries were removed from dependency inputs; the signature portrait is a local canvas with a CSS lens.
